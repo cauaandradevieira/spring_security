@@ -21,9 +21,12 @@ public class UserRole
     @Enumerated(EnumType.STRING)
     private RoleEnum name;
 
+    @Column(name = "date_created_in")
     private Instant dateCreatedIn;
+
+    @Column(name = "date_updated_in")
     private Instant dateUpdatedIn;
 
-    @ManyToMany(mappedBy = "role", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "role", cascade = CascadeType.PERSIST)
     private Set<User> users;
 }
