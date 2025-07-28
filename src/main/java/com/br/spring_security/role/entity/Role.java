@@ -1,6 +1,7 @@
-package com.br.spring_security.user.entity;
+package com.br.spring_security.role.entity;
 
-import com.br.spring_security.user.dto.request.RoleRequestDTO;
+import com.br.spring_security.role.dto.request.RoleRequestDTO;
+import com.br.spring_security.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

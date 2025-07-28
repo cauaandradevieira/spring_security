@@ -1,0 +1,33 @@
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+CREATE TABLE role
+(
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    date_created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    date_updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+
+    CONSTRAINT uk_role_name UNIQUE (name)
+);
+
+CREATE TABLE users
+(
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    is_enable BOOLEAN DEFAULT FALSE,
+    date_created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    date_updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+
+    CONSTRAINT uk_user_email UNIQUE (email)
+);
+
+CREATE TABLE user_role
+(
+    user_id UUID NOT NULL,
+    role_id INTEGER NOT NULL,
+
+    CONSTRAINT pk_user_role PRIMARY KEY(user_id, role_id),
+    CONSTRAINT fk_user_role_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_user_role_role FOREIGN KEY (role_id) REFERENCES role(id) ON DELETE CASCADE
+);
