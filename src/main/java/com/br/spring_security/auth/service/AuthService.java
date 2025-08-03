@@ -5,6 +5,7 @@ import com.br.spring_security.auth.dto.request.LoginRequestDTO;
 import com.br.spring_security.auth.dto.request.RegisterRequestDTO;
 import com.br.spring_security.auth.dto.response.JwtReponseDTO;
 import com.br.spring_security.auth.entity.PendingUser;
+import com.br.spring_security.auth.exception.EmailAlreadyInUseException;
 import com.br.spring_security.notification.sender.EmailSender;
 import com.br.spring_security.role.entity.Role;
 import com.br.spring_security.user.entity.User;
@@ -45,11 +46,12 @@ public class AuthService
     @Transactional
     public String register(@Valid RegisterRequestDTO registerRequestDTO)
     {
+        log.info("Iniciando o metodo register");
         String email = registerRequestDTO.email();
 
         if(userRepository.existsByEmail(email))
         {
-            throw new IllegalArgumentException("Email já existe no sistema.");
+            throw new EmailAlreadyInUseException("Já existe uma conta associada a este e-mail.", email);
         }
 
         String passwordHash = passwordEncoder.encode(registerRequestDTO.password());
@@ -72,7 +74,25 @@ public class AuthService
                 pedingUser.getName(),
                 instant);
 
+        log.info("Acabou o metodo register");
         return email;
+    }
+
+    public void confirmRegistration(ConfirmRegistrationRequest request)
+    {
+        PendingUser pendingUser = pedingUserService.findByEmailAndCode(request.email(), request.confirmationCode());
+
+        pedingUserService.deleteAllByEmail(request.email());
+
+        Role role = roleRepository.findByName("ROLE_BASIC")
+                .orElseThrow(() -> new EntityNotFoundException("Erro no sistema tente mais tarde."));
+
+        User user = new User(pendingUser, role);
+        userRepository.save(user);
+
+        emailSender.sendRegistrationConfirm(
+                user.getEmail(),
+                user.getName());
     }
 
     public JwtReponseDTO login(@Valid LoginRequestDTO loginDTO)
@@ -96,20 +116,14 @@ public class AuthService
                 .build();
     }
 
-    public void confirmRegistration(ConfirmRegistrationRequest request)
+    public void logout() // parametro cookie e token de acess
     {
-        PendingUser pendingUser = pedingUserService.findByEmailAndCode(request.email(), request.confirmationCode());
+        // pegar token de acess e colocar como expirado
+        //
+    }
 
-        pedingUserService.deleteAllByEmail(request.email());
-
-        Role role = roleRepository.findByName("ROLE_BASIC")
-                .orElseThrow(() -> new EntityNotFoundException("Erro no sistema tente mais tarde."));
-
-        User user = new User(pendingUser, role);
-        userRepository.save(user);
-
-        emailSender.sendRegistrationConfirm(
-                user.getEmail(),
-                user.getName());
+    public void refreshToken()
+    {
+        
     }
 }
