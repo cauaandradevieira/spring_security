@@ -118,12 +118,23 @@ public class AuthService
 
     public void logout() // parametro cookie e token de acess
     {
-        // pegar token de acess e colocar como expirado
-        //
+        // pegar o token de acesso e colocar na blacklist
+        // pegar o refresh token e colocar na blacklist
+        // setar o Cookie do refresh para expirado
     }
 
-    public void refreshToken()
+    public void refreshToken(String cookie)
     {
-        
+        // validar o cookie ( se ele existe ou se ele ja estar expirado )
+        // verificar se estar na blacklist
+        // extrair o refresh token pelo valor do cookie ( acho q n precisa )
+        // extrair o id do usuário
+        // pegar o usuário do banco de dados
+        // validar o refresh token
+        // colocar o token acesso antigo na blacklist
+        // colocar o refresh token antigo na blacklist
+        // gerar outro token de acesso
+        // gerar outro refresh token
+        // retornar o token de acesso e refresh token como cookie http only
     }
 }
