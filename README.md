@@ -1,5 +1,5 @@
 
-# 📧 Sistema de Autenticação com Spring Boot
+# 📧 Sistema de Autenticação com Spring Boot ( Não finalizado )
 
 Este projeto é um sistema de autenticação seguro desenvolvido com **Spring Boot**, utilizando **JWT**, **Cookies HttpOnly**, **confirmação de e-mail via JavaMailSender** e **Thymeleaf** para renderização de mensagens de feedback. Ideal para aplicações que exigem autenticação robusta com confirmação de identidade por e-mail.
 
